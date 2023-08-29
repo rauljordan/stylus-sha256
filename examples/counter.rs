@@ -8,7 +8,7 @@ use ethers::{
     prelude::abigen,
     providers::{Http, Middleware, Provider},
     signers::{LocalWallet, Signer},
-    types::Address,
+    types::{Address, Bytes},
 };
 use eyre::eyre;
 use std::io::{BufRead, BufReader};
@@ -22,6 +22,8 @@ const ENV_RPC_URL: &str = "RPC_URL";
 // DEPLOYED PROGRAM ADDRESS FOR STYLUS-HELLO-WORLD.
 const ENV_PROGRAM_ADDRESS: &str = "STYLUS_PROGRAM_ADDRESS";
 
+// 7f85fb7f42a0c0d40431cc0f7dfdf88be6495e67
+
 #[tokio::main]
 async fn main() -> eyre::Result<()> {
     let priv_key_path = std::env::var(ENV_PRIV_KEY_PATH)
@@ -30,35 +32,28 @@ async fn main() -> eyre::Result<()> {
         std::env::var(ENV_RPC_URL).map_err(|_| eyre!("No {} env var set", ENV_RPC_URL))?;
     let program_address = std::env::var(ENV_PROGRAM_ADDRESS)
         .map_err(|_| eyre!("No {} env var set", ENV_PROGRAM_ADDRESS))?;
-    abigen!(
-        Counter,
-        r#"[
-            function number() external view returns (uint256)
-            function setNumber(uint256 number) external
-            function increment() external
-        ]"#
-    );
+
+    // let privkey = read_secret_from_file(&priv_key_path)?;
+    // let wallet = LocalWallet::from_str(&privkey)?;
+    // let chain_id = provider.get_chainid().await?.as_u64();
+    // let client = Arc::new(SignerMiddleware::new(
+    //     provider,
+    //     wallet.clone().with_chain_id(chain_id),
+    // ));
 
     let provider = Provider::<Http>::try_from(rpc_url)?;
     let address: Address = program_address.parse()?;
+    abigen!(
+        Sha256Hasher,
+        r#"[
+            function sha256(bytes memory input) external view returns (bytes32)
+        ]"#
+    );
+    let hasher = Sha256Hasher::new(address, provider.into());
+    let input = Bytes::from(b"The quick brown fox jumps over the lazy dog");
+    let resp: [u8; 32] = hasher.sha_256(input).call().await?;
 
-    let privkey = read_secret_from_file(&priv_key_path)?;
-    let wallet = LocalWallet::from_str(&privkey)?;
-    let chain_id = provider.get_chainid().await?.as_u64();
-    let client = Arc::new(SignerMiddleware::new(
-        provider,
-        wallet.clone().with_chain_id(chain_id),
-    ));
-
-    let counter = Counter::new(address, client);
-    let num = counter.number().call().await;
-    println!("Counter number value = {:?}", num);
-
-    let _ = counter.increment().send().await?.await?;
-    println!("Successfully incremented counter via a tx");
-
-    let num = counter.number().call().await;
-    println!("New counter number value = {:?}", num);
+    println!("Resp: {:?}", Bytes::from(resp));
     Ok(())
 }
 
