@@ -11,9 +11,12 @@ use ethers::{
     types::{Address, Bytes},
 };
 use eyre::eyre;
-use std::io::{BufRead, BufReader};
 use std::str::FromStr;
 use std::sync::Arc;
+use std::{
+    io::{BufRead, BufReader},
+    time::Instant,
+};
 
 // YOUR PRIVATE KEY FILE PATH.
 const ENV_PRIV_KEY_PATH: &str = "PRIV_KEY_PATH";
@@ -50,11 +53,17 @@ async fn main() -> eyre::Result<()> {
         ]"#
     );
     let hasher = Sha256Hasher::new(address, provider.into());
-    let input = Bytes::from(b"The quick brown fox jumps over the lazy dog");
-    let resp: [u8; 32] = hasher.sha_256(input).call().await?;
-
-    println!("Resp: {:?}", Bytes::from(resp));
-    Ok(())
+    loop {
+        let start = Instant::now();
+        let input = Bytes::from(b"The quick brown fox jumps over the lazy dog");
+        let resp: [u8; 32] = hasher.sha_256(input).call().await?;
+        let end = Instant::now();
+        println!(
+            "Resp: {:?}, took: {:?}",
+            Bytes::from(resp),
+            end.duration_since(start)
+        );
+    }
 }
 
 fn read_secret_from_file(fpath: &str) -> eyre::Result<String> {

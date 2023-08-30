@@ -3029,7 +3029,7 @@ dependencies = [
 [[package]]
 name = "stylus-proc"
 version = "0.1.0"
-source = "git+https://github.com/OffchainLabs/stylus-sdk-rs?rev=7372157#7372157d6581794217b8dedc6ea64cbcffd317b8"
+source = "git+https://github.com/OffchainLabs/stylus-sdk-rs#154847d39d934409d6b68f15511c2f133e33dabf"
 dependencies = [
  "alloy-primitives",
  "alloy-sol-types",
@@ -3046,7 +3046,7 @@ dependencies = [
 [[package]]
 name = "stylus-sdk"
 version = "0.1.0"
-source = "git+https://github.com/OffchainLabs/stylus-sdk-rs?rev=7372157#7372157d6581794217b8dedc6ea64cbcffd317b8"
+source = "git+https://github.com/OffchainLabs/stylus-sdk-rs#154847d39d934409d6b68f15511c2f133e33dabf"
 dependencies = [
  "alloy-primitives",
  "alloy-sol-types",

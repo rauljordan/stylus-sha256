@@ -9,12 +9,9 @@ use stylus_sdk::{
     prelude::*,
 };
 
-sol_storage! {
-    #[entrypoint]
-    pub struct Sha256Hasher {
-        bool b
-    }
-}
+#[entrypoint]
+#[solidity_storage]
+pub struct Sha256Hasher;
 
 use sha2::{Digest, Sha256};
 
