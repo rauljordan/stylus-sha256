@@ -1,5 +1,5 @@
 [package]
-name = "stylus-hello-world"
+name = "stylus-sha256"
 version = "0.1.0"
 edition = "2021"
 
@@ -10,6 +10,7 @@ stylus-sdk = { git = "https://github.com/OffchainLabs/stylus-sdk-rs" }
 hex = "0.4.3"
 wee_alloc = "0.4.5"
 sha2 = "0.10.7"
+futures = "0.3.28"
 
 [dev-dependencies]
 tokio = { version = "1.12.0", features = ["full"] } 

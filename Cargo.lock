@@ -3019,6 +3019,7 @@ dependencies = [
  "alloy-sol-types",
  "ethers",
  "eyre",
+ "futures",
  "hex",
  "sha2",
  "stylus-sdk",
